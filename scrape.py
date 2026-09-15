@@ -49,12 +49,12 @@ def download_content(url, cur_path, ignore_course_menu=True, verbose=True):
 			if href.endswith('logout'):
 				continue
 			download_content(
-				f"https://online.manchester.ac.uk{href}", os.path.join(cur_path, name))
+				f"https://edimension.sutd.edu.sg{href}", os.path.join(cur_path, name))
 
 		if href.startswith('/bbcswebdav'):
-			download_file(f"https://online.manchester.ac.uk{href}", cur_path, name)
+			download_file(f"https://edimension.sutd.edu.sg{href}", cur_path, name)
 
-		if href.startswith('https://online.manchester.ac.uk/bbcswebdav'):
+		if href.startswith('https://edimension.sutd.edu.sg/bbcswebdav'):
 			download_file(href, cur_path, name)
 
 
