@@ -1,11 +1,13 @@
 import os
 import re
+import importlib
 import requests
+import subprocess
 import sys
 from bs4 import BeautifulSoup
-from course_links import course_links
 from common_mime import common_mime
-from headers import headers, cookies
+import course_links as course_links_module
+import headers as headers_module
 
 visited_urls = set()
 
@@ -21,8 +23,8 @@ def download_content(url, cur_path, ignore_course_menu=True, verbose=True):
 
 	visited_urls.add(url)
 
-	response = requests.get(url, headers=headers,
-							cookies=cookies, allow_redirects=True)
+	response = requests.get(url, headers=headers_module.headers,
+							cookies=headers_module.cookies, allow_redirects=True)
 
 	soup = BeautifulSoup(response.content, 'html.parser')
 
@@ -64,7 +66,11 @@ def download_file(url, path, name):
 
 	visited_urls.add(url)
 
-	response = requests.get(url, headers=headers, cookies=cookies)
+	response = requests.get(
+		url,
+		headers=headers_module.headers,
+		cookies=headers_module.cookies,
+	)
 
 	content_type = response.headers.get('content-type')
 
@@ -85,11 +91,33 @@ def download_file(url, path, name):
 			f.write(response.content)
 
 
+def main():
+	path = sys.argv[1] if len(sys.argv) > 1 else 'University'
+	try:
+		subprocess.run(
+			[sys.executable, os.path.join(os.path.dirname(__file__), 'getCourseLinks.py')],
+			check=True,
+		)
+	except subprocess.CalledProcessError:
+		print(
+			'Course refresh failed. Follow the steps in the README to update your headers.py',
+			file=sys.stderr,
+		)
+		sys.exit(1)
+
+	importlib.reload(course_links_module)
+	importlib.reload(headers_module)
+
+	for term, courses in course_links_module.course_links.items():
+		if isinstance(courses, str):
+			courses = {term: courses}
+			term = ""
+
+		for name, link in courses.items():
+			print(f'Downloading {name}...')
+			course_path = os.path.join(path, term, name) if term else os.path.join(path, name)
+			download_content(link, course_path, ignore_course_menu=False)
+
+
 if __name__ == "__main__":
-	if len(sys.argv) > 1:
-		path = sys.argv[0]
-	else:
-		path = 'University'
-	for name, link in course_links.items():
-		print(f'Downloading {name}...')
-		download_content(link, os.path.join(path, name), ignore_course_menu=False)
+	main()

@@ -24,9 +24,6 @@ pip install requests
 
 7. Go to https://curlconverter.com/ and paste the cURL request into it to get the request headers and cookies in Python
 8. Copy the `headers` and `cookies` variables and paste them into `headers.py`
-9. Go back to the Blackboard homepage and open the Console tab in the developer tools
-10. Copy the contents of `getCourseLinks.js` and paste it into the console and press Enter.
-11. Right click on the output and click "Copy Object"
-12. Paste the object in place of `#PASTE HERE` in `course_links.py`
-13. Save changes 
-14. Run `python3 scrape.py` to start downloading
+9. Run `python3 scrape.py` to refresh the course list and start downloading.
+
+If the refresh reports that `headers.py` is empty or outdated, copy fresh cookies and request headers from an authenticated Blackboard request into `headers.py`, then rerun `scrape.py`.
