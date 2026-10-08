@@ -27,3 +27,5 @@ pip install requests
 9. Run `python3 scrape.py` to refresh the course list and start downloading.
 
 If the refresh reports that `headers.py` is empty or outdated, copy fresh cookies and request headers from an authenticated Blackboard request into `headers.py`, then rerun `scrape.py`.
+
+During scraping, use the terminal selector to choose terms and courses. `All terms` and `All courses` are selected by default. To choose individual items, move to an item with the arrow keys, press Space to select it, then press Enter to confirm. Press `Q` or Escape to cancel.
