@@ -1,4 +1,5 @@
-# Blackboard Scraper Notes
+# Blackboard Scraper Overview
+A scraper that downloads files from a BlackBoard URL. It requires the specific auth headers to be grabbed by the user.
 
 ## Repository Files
 
@@ -80,3 +81,9 @@ python3.12 scrape.py
 ```
 
 This refreshes the course list and downloads pages and files under `University/<term>/<course>/`. An optional output directory can be supplied as the first argument.
+
+During the full workflow, `scrape.py` opens a terminal selector. The terms screen starts with an explicit `All terms` row selected. Moving down from it clears that row; pressing Enter without manually toggling a term selects the currently highlighted term. Otherwise, move to individual rows and press Space to select them. Each selected term then has an `All courses` row selected by default, with the same manual-selection behavior. Term rows include a dimmed preview of up to two courses, reduced to their final three words. Use the arrow keys to navigate, Space to toggle, and Enter to confirm each screen. Press `Q` or Escape to cancel.
+
+The selector starts with `All terms` or `All courses` selected. Moving down from the default `All` row clears that default, and pressing Enter without manually toggling an item selects the row currently under the cursor. Press Space to toggle multiple explicit selections. This makes the current cursor position the default choice.
+
+Some courses returned by Blackboard use the Original course format even when `externalAccessUrl` has an `/ultra/courses/...` path. The Ultra content endpoint then returns HTTP 400 with `Finding children for ROOT is applicable to Ultra courses only.` For that response, `scrape.py` falls back to `/webapps/blackboard/execute/modulepage/view?course_id=...` and uses the legacy HTML crawler to download nested content and WebDAV files. A successful fallback should create folders and files below the course directory, rather than only its top-level `page.html`.
